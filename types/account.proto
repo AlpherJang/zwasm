@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "github.com/zhigui-projects/zwasm/types";
+
+message State {
+    uint64 nonce = 1;
+    uint64 balance = 2;
+    bytes codeHash = 3;
+    bytes storageRoot = 4;
+}
