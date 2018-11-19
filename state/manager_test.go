@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/zhigui-projects/zwasm/types"
-	"github.com/zhigui-projects/zwasm/common"
 	"encoding/hex"
 	"os"
+
 	"github.com/aergoio/aergo-lib/db"
+	"github.com/stretchr/testify/assert"
+	"github.com/zhigui-projects/zwasm/common"
+	"github.com/zhigui-projects/zwasm/types"
 )
 
 var (

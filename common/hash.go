@@ -2,6 +2,7 @@ package common
 
 import (
 	"crypto/sha256"
+
 	"golang.org/x/crypto/sha3"
 )
 

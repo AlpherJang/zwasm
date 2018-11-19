@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package types;
+
+option go_package = "github.com/zhigui-projects/zwasm/types";
+
+message CallInfo {
+    string name = 1;
+    repeated bytes args = 2;
+}

@@ -1,12 +1,13 @@
 package state
 
 import (
-	"sync"
-	"github.com/aergoio/aergo/pkg/trie"
 	"errors"
-	"github.com/zhigui-projects/zwasm/types"
 	"fmt"
+	"sync"
+
 	"github.com/aergoio/aergo-lib/db"
+	"github.com/aergoio/aergo/pkg/trie"
+	"github.com/zhigui-projects/zwasm/types"
 )
 
 var (

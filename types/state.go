@@ -2,8 +2,8 @@ package types
 
 import (
 	"bytes"
-	"reflect"
 	"encoding/hex"
+	"reflect"
 )
 
 // Hash is a fixed size bytes

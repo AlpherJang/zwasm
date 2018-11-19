@@ -3,10 +3,11 @@ package state
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"github.com/aergoio/aergo-lib/db"
-	"os"
 	"fmt"
+	"os"
+
+	"github.com/aergoio/aergo-lib/db"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
@@ -100,4 +101,3 @@ func TestStateDataOverwrite(t *testing.T) {
 	assert.NotNil(t, data)
 	assert.Equal(t, testOver, data)
 }
-

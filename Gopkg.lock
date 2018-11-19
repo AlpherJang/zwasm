@@ -29,18 +29,6 @@
   version = "v1.1.1"
 
 [[projects]]
-  name = "github.com/sunpuyo/badger"
-  packages = [
-    ".",
-    "options",
-    "protos",
-    "skl",
-    "table",
-    "y"
-  ]
-  revision = "bb757672e2c7e90b0707ab643972dbfcf638aebf"
-
-[[projects]]
   branch = "master"
   name = "github.com/dgryski/go-farm"
   packages = ["."]
@@ -51,6 +39,19 @@
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
   version = "v1.4.7"
+
+[[projects]]
+  name = "github.com/go-interpreter/wagon"
+  packages = [
+    "disasm",
+    "internal/stack",
+    "wasm",
+    "wasm/internal/readpos",
+    "wasm/leb128",
+    "wasm/operators"
+  ]
+  revision = "0077fe2c1bbd991b8da10d878985e78ca6ac25e9"
+  version = "v0.3.0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -98,6 +99,17 @@
   packages = ["."]
   revision = "c01d1270ff3e442a8a57cddc1c92dc1138598194"
   version = "v1.2.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/perlin-network/life"
+  packages = [
+    "compiler",
+    "compiler/opcodes",
+    "exec",
+    "utils"
+  ]
+  revision = "98065d82a6ee1b07e4846bd4b007cf505f815b6d"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -161,6 +173,18 @@
   version = "v1.2.2"
 
 [[projects]]
+  name = "github.com/sunpuyo/badger"
+  packages = [
+    ".",
+    "options",
+    "protos",
+    "skl",
+    "table",
+    "y"
+  ]
+  revision = "bb757672e2c7e90b0707ab643972dbfcf638aebf"
+
+[[projects]]
   branch = "master"
   name = "github.com/syndtr/goleveldb"
   packages = [
@@ -178,6 +202,31 @@
     "leveldb/util"
   ]
   revision = "f9080354173f192dfc8821931eacf9cfd6819253"
+
+[[projects]]
+  name = "go.uber.org/atomic"
+  packages = ["."]
+  revision = "1ea20fb1cbb1cc08cbd0d913a96dead89aa18289"
+  version = "v1.3.2"
+
+[[projects]]
+  name = "go.uber.org/multierr"
+  packages = ["."]
+  revision = "3c4937480c32f4c13a875a1829af76c98ca3d40a"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "go.uber.org/zap"
+  packages = [
+    ".",
+    "buffer",
+    "internal/bufferpool",
+    "internal/color",
+    "internal/exit",
+    "zapcore"
+  ]
+  revision = "ff33455a0e382e8a81d14dd7c922020b6b5e7982"
+  version = "v1.9.1"
 
 [[projects]]
   branch = "master"
@@ -223,6 +272,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f07a567555ba894457d360ced7b7c44e9804bb2e9281e9e2fdc7d3838dcf9fdc"
+  inputs-digest = "4301a77e700a0401b26be18c3841f151a9447b9d7cce9c4bde647a094a72c5b4"
   solver-name = "gps-cdcl"
   solver-version = 1
