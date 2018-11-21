@@ -174,7 +174,6 @@ func call(code []byte, callInfo *types.CallInfo, resolver *externalResolver) (in
 		return -1, 0, errNotSupportStartFunc
 	}
 
-
 	entryId, ok := vm.GetFunctionExport(callInfo.Name)
 	if !ok {
 		err = errors.Errorf("function %s not found", callInfo.Name)
