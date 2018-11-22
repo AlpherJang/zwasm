@@ -45,7 +45,7 @@ func TestGetSetCode(t *testing.T) {
 	codeLenBytes := make([]byte, 4)
 	binary.LittleEndian.PutUint32(codeLenBytes, uint32(codeLen+4))
 	codeLenBytes = append(codeLenBytes, code...)
-	setCode(crtState, codeLenBytes)
+	setCode(crtState, codeLenBytes, 10000)
 	ret1 := getCode(crtState, nil)
 	assert.Nil(t, ret1)
 
@@ -56,7 +56,7 @@ func TestGetSetCode(t *testing.T) {
 	totalCodeLenBytes := make([]byte, 4)
 	binary.LittleEndian.PutUint32(totalCodeLenBytes, uint32(4+4+codeLen))
 	totalCodeLenBytes = append(totalCodeLenBytes, correctCodeLenBytes...)
-	setCode(crtState1, totalCodeLenBytes)
+	setCode(crtState1, totalCodeLenBytes, 10000)
 	ret2 := getCode(crtState1, nil)
 	assert.NotNil(t, ret2)
 	assert.Equal(t, code, ret2)

@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	errNoInitFunction    = errors.New("contract no init function")
 	errUnmarshalInitCall = errors.New("failed unmarshal init call info")
 	errUnmarshalCall     = errors.New("failed unmarshal function call info")
 	errNoContract        = errors.New("no contract found")
+	errGasExceed         = errors.New("gas limit exceed")
 )
 
 type Context struct {
@@ -21,13 +21,13 @@ type Context struct {
 }
 
 func Create(crtState *state.ContractState, context *Context, code []byte) (int64, uint64, error) {
-	contract, codeLen, err := setCode(crtState, code)
+	contract, codeLen, deployGas, err := setCode(crtState, code, context.gasLimit)
 	if err != nil {
 		return 0, 0, err
 	}
 
 	crtState.SetData([]byte("Creator"), context.senderAddress)
-	var ci *types.CallInfo
+	ci := &types.CallInfo{}
 	if len(code) != int(codeLen) {
 		err = proto.Unmarshal(code[codeLen:], ci)
 		if err != nil {
@@ -36,10 +36,11 @@ func Create(crtState *state.ContractState, context *Context, code []byte) (int64
 	}
 
 	if ci == nil {
-		return 0, 0, errNoInitFunction
+		return 0, deployGas, nil
 	}
 
-	return call(contract, ci, newExternalResolver(context, crtState))
+	ret, callGas, err := call(contract, ci, newExternalResolver(context, crtState))
+	return ret, deployGas + callGas, err
 }
 
 func Call(crtState *state.ContractState, context *Context, code []byte) (int64, uint64, error) {

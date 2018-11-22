@@ -14,6 +14,7 @@ import (
 
 const defaultMemoryPages = 128
 const defaultTableSize = 65536
+const gasByKBSize = 1
 
 var (
 	errCreateVM            = errors.New("failed to create virtual machine")
@@ -55,7 +56,7 @@ func (shim *externalResolver) ResolveFunc(module, field string) exec.FunctionImp
 			return func(vm *exec.VirtualMachine) int64 {
 				ptr := int(uint32(vm.GetCurrentFrame().Locals[0]))
 				keyLen := int(uint32(vm.GetCurrentFrame().Locals[1]))
-				key := vm.Memory[ptr : ptr+keyLen]
+				key := vm.Memory[ptr: ptr+keyLen]
 
 				value, err := shim.crtState.GetData(key)
 				if err != nil {
@@ -70,11 +71,11 @@ func (shim *externalResolver) ResolveFunc(module, field string) exec.FunctionImp
 			return func(vm *exec.VirtualMachine) int64 {
 				keyPtr := int(uint32(vm.GetCurrentFrame().Locals[0]))
 				keyLen := int(uint32(vm.GetCurrentFrame().Locals[1]))
-				key := vm.Memory[keyPtr : keyPtr+keyLen]
+				key := vm.Memory[keyPtr: keyPtr+keyLen]
 
 				valuePtr := int(uint32(vm.GetCurrentFrame().Locals[2]))
 				valueLen := int(uint32(vm.GetCurrentFrame().Locals[3]))
-				value := vm.Memory[valuePtr : valuePtr+valueLen]
+				value := vm.Memory[valuePtr: valuePtr+valueLen]
 
 				err := shim.crtState.SetData(key, value)
 				if err != nil {
@@ -88,7 +89,7 @@ func (shim *externalResolver) ResolveFunc(module, field string) exec.FunctionImp
 			return func(vm *exec.VirtualMachine) int64 {
 				keyPtr := int(uint32(vm.GetCurrentFrame().Locals[0]))
 				keyLen := int(uint32(vm.GetCurrentFrame().Locals[1]))
-				key := vm.Memory[keyPtr : keyPtr+keyLen]
+				key := vm.Memory[keyPtr: keyPtr+keyLen]
 
 				outValuePtr := int(uint32(vm.GetCurrentFrame().Locals[2]))
 				value, err := shim.crtState.GetData(key)
@@ -96,7 +97,7 @@ func (shim *externalResolver) ResolveFunc(module, field string) exec.FunctionImp
 					log.Error().Err(err)
 					return -1
 				} else {
-					outValueMem := vm.Memory[outValuePtr : outValuePtr+len(value)]
+					outValueMem := vm.Memory[outValuePtr: outValuePtr+len(value)]
 					copy(outValueMem, value)
 					return 1
 				}
@@ -113,28 +114,34 @@ func codeLength(val []byte) uint32 {
 	return binary.LittleEndian.Uint32(val[0:])
 }
 
-func setCode(contractState *state.ContractState, code []byte) ([]byte, uint32, error) {
+func setCode(contractState *state.ContractState, code []byte, gasLimit uint64) ([]byte, uint32, uint64, error) {
 	if len(code) <= 4 {
 		err := fmt.Errorf("invalid code (%d bytes is too short)", len(code))
-		return nil, 0, err
+		return nil, 0, 0, err
 	}
 	codeLen := codeLength(code[0:])
 	if uint32(len(code)) < codeLen {
 		err := fmt.Errorf("invalid code (expected %d bytes, actual %d bytes)", codeLen, len(code))
-		return nil, 0, err
+		return nil, 0, 0, err
 	}
 	sCode := code[4:codeLen]
 
-	err := contractState.SetCode(sCode)
-	if err != nil {
-		return nil, 0, err
-	}
-	contract := getCode(contractState, sCode)
-	if contract == nil {
-		return nil, 0, errDeployContract
+	gas := uint64(codeLength(sCode[0:]) / 1024 * gasByKBSize)
+	if gas > gasLimit {
+		return nil, 0, 0, errGasExceed
 	}
 
-	return contract, codeLen, nil
+	err := contractState.SetCode(sCode)
+	if err != nil {
+		return nil, 0, 0, err
+	}
+
+	contract := getCode(contractState, sCode)
+	if contract == nil {
+		return nil, 0, 0, errDeployContract
+	}
+
+	return contract, codeLen, gas, nil
 }
 
 func getCode(contractState *state.ContractState, code []byte) []byte {
@@ -156,7 +163,7 @@ func getCode(contractState *state.ContractState, code []byte) []byte {
 	if 4+l > uint32(valLen) {
 		return nil
 	}
-	return val[4 : 4+l]
+	return val[4: 4+l]
 }
 
 func call(code []byte, callInfo *types.CallInfo, resolver *externalResolver) (int64, uint64, error) {
